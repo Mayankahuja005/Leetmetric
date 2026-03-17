@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const cardStatsContainer = document.querySelector(".stats-cards");
 
-    // ✅ Username validation
     function validateUsername(username) {
         if (username.trim() === "") {
             alert("Username should not be empty");
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isMatching;
     }
 
-    // ✅ Fetch data
+    
     async function fetchUserdetails(username) {
         try {
             searchButton.textContent = "Searching...";
@@ -56,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ Progress circle update
     function updateProgress(solved, total, label, circle) {
         if (total === 0) total = 1; // prevent crash
 
@@ -65,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
         label.textContent = `${solved}/${total}`;
     }
 
-    // ✅ Display data (FINAL FIXED)
     function displayUserData(data) {
 
         const totalEasyQues = data.totalEasy || 0;
@@ -76,12 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const solvedMedium = data.mediumSolved || 0;
         const solvedHard = data.hardSolved || 0;
 
-        // Progress circles
         updateProgress(solvedEasy, totalEasyQues, easyLabel, easyProgressCircle);
         updateProgress(solvedMedium, totalMediumQues, mediumLabel, mediumProgressCircle);
         updateProgress(solvedHard, totalHardQues, hardLabel, hardProgressCircle);
 
-        // Cards
         const cardData = [
             { label: "Total Solved", value: data.totalSolved || 0 },
             { label: "Easy Solved", value: solvedEasy },
@@ -97,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `).join("");
     }
 
-    // ✅ Button click
+
     searchButton.addEventListener("click", function () {
         statsContainer.style.display = "block";
 
