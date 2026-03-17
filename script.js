@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded",function(){
             searchButton.textContent="Searching...";
             searchButton.disabled=true;
         
-            const response = await fetch(`https://corsproxy.io/?https://leetcode-stats-api.herokuapp.com/${username}`);
+            const response = await fetch(`https://leetcode-stats-api.vercel.app/${username}`);
             const data = await response.json();
 
             if(!response.ok || data.status==="error"){
