@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const cardStatsContainer = document.querySelector(".stats-cards");
 
-
-    
+    // ✅ Username validation
     function validateUsername(username) {
         if (username.trim() === "") {
             alert("Username should not be empty");
@@ -32,21 +31,20 @@ document.addEventListener("DOMContentLoaded", function () {
         return isMatching;
     }
 
-
-
+    // ✅ Fetch data
     async function fetchUserdetails(username) {
         try {
             searchButton.textContent = "Searching...";
             searchButton.disabled = true;
 
             const response = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
-
-            if (!response.ok) {
-                throw new Error("Unable to fetch user details");
-            }
-
             const data = await response.json();
-            console.log("Data:", data);
+
+            console.log(data);
+
+            if (!response.ok || data.status === "error") {
+                throw new Error("User not found");
+            }
 
             displayUserData(data);
 
@@ -58,33 +56,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
+    // ✅ Progress circle update
     function updateProgress(solved, total, label, circle) {
+        if (total === 0) total = 1; // prevent crash
+
         const progressDegree = (solved / total) * 360;
         circle.style.setProperty("--progress-degree", `${progressDegree}deg`);
         label.textContent = `${solved}/${total}`;
     }
 
-
+    // ✅ Display data (FINAL FIXED)
     function displayUserData(data) {
 
-        const totalEasyQues = data.totalEasy;
-        const totalMediumQues = data.totalMedium;
-        const totalHardQues = data.totalHard;
+        const totalEasyQues = data.totalEasy || 0;
+        const totalMediumQues = data.totalMedium || 0;
+        const totalHardQues = data.totalHard || 0;
 
-        const solvedEasy = data.easySolved;
-        const solvedMedium = data.mediumSolved;
-        const solvedHard = data.hardSolved;
+        const solvedEasy = data.easySolved || 0;
+        const solvedMedium = data.mediumSolved || 0;
+        const solvedHard = data.hardSolved || 0;
 
+        // Progress circles
         updateProgress(solvedEasy, totalEasyQues, easyLabel, easyProgressCircle);
         updateProgress(solvedMedium, totalMediumQues, mediumLabel, mediumProgressCircle);
         updateProgress(solvedHard, totalHardQues, hardLabel, hardProgressCircle);
 
+        // Cards
         const cardData = [
-            { label: "Overall Solved", value: data.totalSolved },
-            { label: "Easy Solved", value: data.easySolved },
-            { label: "Medium Solved", value: data.mediumSolved },
-            { label: "Hard Solved", value: data.hardSolved }
+            { label: "Total Solved", value: data.totalSolved || 0 },
+            { label: "Easy Solved", value: solvedEasy },
+            { label: "Medium Solved", value: solvedMedium },
+            { label: "Hard Solved", value: solvedHard }
         ];
 
         cardStatsContainer.innerHTML = cardData.map(item => `
@@ -95,12 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
         `).join("");
     }
 
-
+    // ✅ Button click
     searchButton.addEventListener("click", function () {
         statsContainer.style.display = "block";
 
         const username = usernameInput.value;
-        console.log("Username:", username);
 
         if (validateUsername(username)) {
             fetchUserdetails(username);
